@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
@@ -23,6 +24,7 @@ mongoose
 
 //middlewares
 app.use(express.json());
+app.use(cors());
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/api/ads", ads);

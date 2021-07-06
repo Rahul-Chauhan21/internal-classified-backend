@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 
 const commentSchema = new mongoose.Schema({
-  descpription: { type: String },
+  description: { type: String, required: true },
   date: { type: Date, default: Date.now },
   adDetails: {
     type: mongoose.Schema.Types.ObjectId,
@@ -10,6 +10,10 @@ const commentSchema = new mongoose.Schema({
     required: true,
   },
   userDetails: {
+    type: String,
+    required: true,
+  },
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -18,7 +22,8 @@ const commentSchema = new mongoose.Schema({
 
 const validate = (comment) => {
   const schema = Joi.object({
-    userDetails: Joi.objectId().required(),
+    userDetails: Joi.string().required(),
+    userId: Joi.objectId().required(),
     adDetails: Joi.objectId().required(),
     description: Joi.string().min(5).required(),
     date: Joi.date().required(),

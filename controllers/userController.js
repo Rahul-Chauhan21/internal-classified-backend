@@ -58,14 +58,49 @@ exports.updateUserInfo = async (req, res) => {
 
 exports.getUserInfo = async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
-  let ads;
+  let ads = [];
   if (user.postedAds.length) {
     ads = await Ad.find({ _id: { $in: user.postedAds } });
-    res.send({
-      user,
-      ads,
-    });
-  } else {
-    res.send(user);
   }
+  res.json({
+    user,
+    ads,
+  });
+};
+
+exports.addToCatalogue = async (req, res) => {
+  console.log("Adding Ad");
+
+  const ad = await Ad.findById(req.params.id);
+  if (!ad) {
+    return res
+      .status(400)
+      .json({ error: "Ad with the given Id does not exist" });
+  }
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $push: { catalogue: req.params.id } },
+    { new: true }
+  );
+  res.json({ user });
+};
+
+exports.removeFromCatalogue = async (req, res) => {
+  console.log("Removing Ad");
+
+  const ad = await Ad.findById(req.params.id);
+  if (!ad) {
+    return res
+      .status(400)
+      .json({ error: "Ad with the given Id does not exist" });
+  }
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $pull: { catalogue: req.params.id } },
+    { new: true }
+  );
+
+  res.json({ user });
 };
