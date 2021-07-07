@@ -19,9 +19,9 @@ router.post("/", async (req, res) => {
 
   const token = user.generateAuthToken();
 
-  const { postedAds, catalogue, firstName, _id } = user;
+  const { postedAds, catalogue, firstName, _id, role } = user;
 
-  res.json({ token, postedAds, catalogue, firstName, _id });
+  res.json({ token, postedAds, catalogue, firstName, _id, role });
 });
 
 const validate = (req) => {

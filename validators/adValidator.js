@@ -6,6 +6,7 @@ exports.validateAdUpdateReq = (ad) => {
     description: Joi.string().min(10).required(),
     category: Joi.string().required(),
     location: Joi.string().required(),
+    price: Joi.number().required(),
     status: Joi.string(),
     isVisible: Joi.boolean(),
     isCommentable: Joi.boolean(),

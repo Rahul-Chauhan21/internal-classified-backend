@@ -48,7 +48,7 @@ exports.deleteAd = async (req, res) => {
 exports.updateAd = async (req, res) => {
   const { error } = validateAdUpdateReq(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).json({ error: error.details[0].message });
   }
 
   const ad = await Ad.findOneAndUpdate(
@@ -62,7 +62,7 @@ exports.updateAd = async (req, res) => {
       .status(404)
       .send(`The Ad with the given Id ${req.params.id} doesn't exist`);
 
-  res.send(ad);
+  res.json({ ad });
 };
 
 exports.getAds = async (req, res) => {
