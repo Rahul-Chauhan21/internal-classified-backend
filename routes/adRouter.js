@@ -8,6 +8,7 @@ const {
   getAd,
   getUserCatalogueAds,
   getApprovedAds,
+  buyAd,
 } = require("../controllers/adController");
 const auth = require("../middlewares/authMiddleware");
 const admin = require("../middlewares/adminMiddleware");
@@ -24,6 +25,8 @@ router.get("/approvedAds", getApprovedAds);
 router.get("/myCatalogueAds", auth, getUserCatalogueAds);
 
 router.get("/:id", getAd);
+
+router.put("/buyAd/:id", auth, buyAd);
 
 router.put("/:id", auth, adbodyhandler, updateAd);
 

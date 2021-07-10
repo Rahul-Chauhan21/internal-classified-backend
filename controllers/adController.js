@@ -66,7 +66,7 @@ exports.updateAd = async (req, res) => {
 };
 
 exports.getAds = async (req, res) => {
-  const posts = await Ad.find().sort("name");
+  const posts = await Ad.find().sort("-date");
   res.json({ posts });
 };
 
@@ -100,7 +100,7 @@ exports.getUserCatalogueAds = async (req, res) => {
   if (!user) return res.status(400).json({ error: "Invalid User" });
 
   let catalogue = [];
-  if (user.postedAds.length) {
+  if (user.catalogue.length) {
     catalogue = await Ad.find({ _id: { $in: user.catalogue } });
   }
   res.json({ catalogue });
@@ -109,4 +109,18 @@ exports.getUserCatalogueAds = async (req, res) => {
 exports.getApprovedAds = async (req, res) => {
   const ads = await Ad.find({ status: "Approved", isVisible: true });
   res.json({ ads });
+};
+
+exports.buyAd = async (req, res) => {
+  const ad = await Ad.findOneAndUpdate(
+    { _id: req.params.id },
+    { $set: { status: "Sold" } },
+    { new: true }
+  );
+  if (!ad) {
+    return res
+      .status(400)
+      .json({ error: "Ad with the given Id does not exist" });
+  }
+  res.json({ ad });
 };

@@ -35,7 +35,7 @@ exports.signUp = async (req, res) => {
 
 exports.updateUserInfo = async (req, res) => {
   const { error } = validateUserInfoUpdateReq(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   const user = await User.findByIdAndUpdate(
     req.params.id,
@@ -53,7 +53,7 @@ exports.updateUserInfo = async (req, res) => {
       .status(404)
       .send(`User with given Id ${req.params.id} doesn't exist`);
 
-  res.send(user);
+  res.json({ user });
 };
 
 exports.getUserInfo = async (req, res) => {
@@ -69,8 +69,6 @@ exports.getUserInfo = async (req, res) => {
 };
 
 exports.addToCatalogue = async (req, res) => {
-  console.log("Adding Ad");
-
   const ad = await Ad.findById(req.params.id);
   if (!ad) {
     return res
@@ -78,17 +76,16 @@ exports.addToCatalogue = async (req, res) => {
       .json({ error: "Ad with the given Id does not exist" });
   }
 
-  const user = await User.findOneAndUpdate(
+  const catalogue = await User.findOneAndUpdate(
     { _id: req.user._id },
     { $push: { catalogue: req.params.id } },
     { new: true }
-  );
-  res.json({ user });
+  ).select("catalogue");
+
+  res.send(catalogue);
 };
 
 exports.removeFromCatalogue = async (req, res) => {
-  console.log("Removing Ad");
-
   const ad = await Ad.findById(req.params.id);
   if (!ad) {
     return res
@@ -96,11 +93,11 @@ exports.removeFromCatalogue = async (req, res) => {
       .json({ error: "Ad with the given Id does not exist" });
   }
 
-  const user = await User.findOneAndUpdate(
+  const catalogue = await User.findOneAndUpdate(
     { _id: req.user._id },
     { $pull: { catalogue: req.params.id } },
     { new: true }
-  );
+  ).select("catalogue");
 
-  res.json({ user });
+  res.send(catalogue);
 };
